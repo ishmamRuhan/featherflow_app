@@ -1,37 +1,378 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../core/theme.dart';
+import '../../core/routes.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeIn;
+  late Animation<Offset> _slideIn;
+
+  String _selectedRole = 'Farmer';
+  final roles = ['Farmer', 'Admin', 'Doctor', 'Delivery', 'Pharmacy', 'Researcher'];
+
+  final Map<String, String> _roleRoutes = {
+    'Farmer': AppRoutes.userDashboard,
+    'Admin': AppRoutes.adminDashboard,
+    'Doctor': AppRoutes.doctorDashboard,
+    'Delivery': AppRoutes.deliveryDashboard,
+    'Pharmacy': AppRoutes.pharmacyDashboard,
+    'Researcher': AppRoutes.researcherDashboard,
+  };
+
+  final Map<String, IconData> _roleIcons = {
+    'Farmer': Icons.agriculture_rounded,
+    'Admin': Icons.admin_panel_settings_rounded,
+    'Doctor': Icons.medical_services_rounded,
+    'Delivery': Icons.delivery_dining_rounded,
+    'Pharmacy': Icons.local_pharmacy_rounded,
+    'Researcher': Icons.science_rounded,
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _fadeIn = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+    );
+    _slideIn = Tween<Offset>(
+      begin: const Offset(0, 0.15),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _login() {
+    final route = _roleRoutes[_selectedRole] ?? AppRoutes.userDashboard;
+    Navigator.pushReplacementNamed(context, route);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("Featherflow Login",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-
-            const SizedBox(height: 20),
-
-            TextField(decoration: InputDecoration(labelText: "Email")),
-            TextField(decoration: InputDecoration(labelText: "Password")),
-
-            const SizedBox(height: 20),
-
-            ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/dashboard'),
-              child: const Text("Login"),
+      body: Stack(
+        children: [
+          // Top green area
+          Container(
+            height: size.height * 0.42,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF011810), AppTheme.primary, Color(0xFF024A37)],
+              ),
             ),
-
-            TextButton(
-              onPressed: () => Navigator.pushNamed(context, '/signup'),
-              child: const Text("Create Account"),
+            child: Stack(
+              children: [
+                Positioned(
+                  top: -40,
+                  right: -40,
+                  child: Container(
+                    width: 200,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withOpacity(0.04),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 20,
+                  left: -30,
+                  child: Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppTheme.accent.withOpacity(0.1),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          // White card area
+          Positioned(
+            top: size.height * 0.35,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: AppTheme.surface,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              ),
+            ),
+          ),
+          // Content
+          FadeTransition(
+            opacity: _fadeIn,
+            child: SlideTransition(
+              position: _slideIn,
+              child: SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 32),
+                      // Logo
+                      Container(
+                        width: 72,
+                        height: 72,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withOpacity(0.15),
+                          border: Border.all(
+                            color: AppTheme.accent.withOpacity(0.5),
+                            width: 2,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.egg_alt_rounded,
+                          size: 34,
+                          color: AppTheme.accentLight,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Featherflow',
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Smart Poultry Management',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12,
+                          color: Colors.white.withOpacity(0.6),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      SizedBox(height: size.height * 0.1),
+                      // Form card
+                      Container(
+                        padding: const EdgeInsets.all(28),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+  BoxShadow(
+    color: AppTheme.primary.withOpacity(0.18),
+    blurRadius: 35,
+    offset: const Offset(0, 12),
+  ),
+  BoxShadow(
+    color: AppTheme.accent.withOpacity(0.08),
+    blurRadius: 60,
+    offset: const Offset(0, 18),
+  ),
+],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Welcome back',
+                              style: GoogleFonts.playfairDisplay(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                                color: AppTheme.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Sign in to your farm account',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 13,
+                                color: AppTheme.textSecondary,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            // Role selector
+                            Text(
+                              'Login As',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.textSecondary,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: roles.map((role) {
+                                final selected = _selectedRole == role;
+                                return GestureDetector(
+                                  onTap: () => setState(() => _selectedRole = role),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: selected
+                                          ? AppTheme.primary
+                                          : const Color(0xFFF0F6F3),
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: selected
+                                            ? AppTheme.primary
+                                            : const Color(0xFFD4E4DF),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          _roleIcons[role],
+                                          size: 14,
+                                          color: selected
+                                              ? Colors.white
+                                              : AppTheme.textSecondary,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          role,
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                            color: selected
+                                                ? Colors.white
+                                                : AppTheme.textSecondary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                            const SizedBox(height: 20),
+                            // Email field
+                            TextField(
+                              decoration: InputDecoration(
+                                labelText: 'Email Address',
+                                hintText: 'you@farm.com',
+                                prefixIcon: const Icon(Icons.email_outlined, size: 20),
+                                labelStyle: GoogleFonts.plusJakartaSans(fontSize: 13),
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            // Password field
+                            TextField(
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                labelText: 'Password',
+                                hintText: '••••••••',
+                                prefixIcon: const Icon(Icons.lock_outline, size: 20),
+                                suffixIcon: const Icon(Icons.visibility_off_outlined, size: 20),
+                                labelStyle: GoogleFonts.plusJakartaSans(fontSize: 13),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: () {},
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  minimumSize: Size.zero,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                child: Text(
+                                  'Forgot password?',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 12,
+                                    color: AppTheme.accent,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: _login,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppTheme.primary,
+                                  padding: const EdgeInsets.symmetric(vertical: 15),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Sign In as $_selectedRole',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Don't have an account? ",
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 13,
+                                    color: AppTheme.textSecondary,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () => Navigator.pushReplacementNamed(
+                                    context,
+                                    AppRoutes.signup,
+                                  ),
+                                  child: Text(
+                                    'Sign Up',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppTheme.primary,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
