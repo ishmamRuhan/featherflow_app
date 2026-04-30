@@ -10,7 +10,7 @@ class ArticlesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const UserDrawer(currentRoute: AppRoutes.userArticles),
+      drawer: const UserDrawer(currentRoute: AppRoutes.articles),
       appBar: AppBar(
         title: const Text('Articles'),
         actions: [
