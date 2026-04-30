@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-
 import '../screens/splash_screen.dart';
 import '../screens/auth/login.dart';
 import '../screens/auth/signup.dart';
 import '../screens/user/dashboard.dart';
 import '../screens/user/labor.dart' as labor_screen;
 import '../screens/user/feed_management.dart';
+import '../screens/user/cost_management.dart';
 import '../screens/user/disease_detection.dart';
 
 // TEMP PLACEHOLDERS (to stop crashes)
@@ -26,7 +26,6 @@ class AppRoutes {
   static const splash = '/';
   static const login = '/login';
   static const signup = '/signup';
-
   static const userDashboard = '/user/dashboard';
   static const labor = '/user/labor';
   static const cost = '/user/cost';
@@ -40,7 +39,7 @@ class AppRoutes {
   static const tax = '/user/tax';
   static const environmental = '/user/environmental';
 
-  // ADMIN placeholders (fix login crash)
+  // ADMIN placeholders
   static const adminDashboard = '/admin/dashboard';
   static const doctorDashboard = '/doctor/dashboard';
   static const deliveryDashboard = '/delivery/dashboard';
@@ -51,20 +50,17 @@ class AppRoutes {
         splash: (_) => const SplashScreen(),
         login: (_) => const LoginScreen(),
         signup: (_) => const SignupScreen(),
-
         userDashboard: (_) => const UserDashboard(),
         labor: (_) => const labor_screen.LaborScreen(),
-        cost: (_) => const labor_screen.LaborScreen(), // Cost management uses LaborScreen
+        cost: (_) => const CostManagementScreen(),
         feed: (_) => const FeedManagementScreen(),
         disease: (_) => const DiseaseDetectionScreen(),
-
-        // placeholders (IMPORTANT FIX)
+        // placeholders
         marketplace: (_) => const _Placeholder("Marketplace"),
         blogging: (_) => const _Placeholder("Blogging"),
         vetMap: (_) => const _Placeholder("Vet Map"),
         tax: (_) => const _Placeholder("Tax Calculation"),
         environmental: (_) => const _Placeholder("Environment"),
-
         adminDashboard: (_) => const _Placeholder("Admin Dashboard"),
         doctorDashboard: (_) => const _Placeholder("Doctor Dashboard"),
         deliveryDashboard: (_) => const _Placeholder("Delivery Dashboard"),
