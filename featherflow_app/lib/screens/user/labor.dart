@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme.dart';
+import '../../core/routes.dart';
 import '../../widgets/common_widgets.dart';
 
 class LaborScreen extends StatefulWidget {
@@ -29,10 +30,25 @@ class _LaborScreenState extends State<LaborScreen> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    final presentCount = _workers.where((w) => w['status'] == 'Present').length;
+    final absentCount = _workers.where((w) => w['status'] == 'Absent').length;
+    final leaveCount = _workers.where((w) => w['status'] == 'On Leave').length;
+    final totalPay = _workers.fold<double>(0, (sum, w) => sum + double.parse((w['pay'] as String).replaceAll('৳', '').replaceAll(',', '')));
+
     return Scaffold(
+      backgroundColor: AppTheme.surface,
+      drawer: const UserDrawer(currentRoute: AppRoutes.labor),
       appBar: AppBar(
         title: const Text('Labor Management'),
-        actions: [const PremiumBadge(), const SizedBox(width: 12)],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications_outlined, color: Colors.white),
+            onPressed: () {},
+          ),
+          const SizedBox(width: 8),
+          const PremiumBadge(),
+          const SizedBox(width: 12),
+        ],
         bottom: TabBar(
           controller: _tabController,
           labelColor: Colors.white,
@@ -95,19 +111,47 @@ class _WorkersTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final totalWorkers = workers.length;
+    final present = workers.where((w) => w['status'] == 'Present').length;
+    final absent = workers.where((w) => w['status'] == 'Absent').length;
+    final onLeave = workers.where((w) => w['status'] == 'On Leave').length;
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Summary row
-        Row(children: [
-          Expanded(child: _MiniStat('Total', '${workers.length}', AppTheme.primary)),
-          const SizedBox(width: 10),
-          Expanded(child: _MiniStat('Present', '${workers.where((w) => w['status'] == 'Present').length}', AppTheme.accent)),
-          const SizedBox(width: 10),
-          Expanded(child: _MiniStat('Absent', '${workers.where((w) => w['status'] == 'Absent').length}', AppTheme.danger)),
-        ]),
-        const SizedBox(height: 16),
-        ...workers.map((w) => _WorkerCard(worker: w)),
+        Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: const Color(0xFFE8F0EC)),
+            boxShadow: [BoxShadow(color: AppTheme.primary.withOpacity(0.05), blurRadius: 18, offset: const Offset(0, 8))],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Labor Overview', style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.w700, color: AppTheme.textPrimary)),
+              const SizedBox(height: 12),
+              Row(children: [
+                Expanded(child: _MiniStat('Workers', '$totalWorkers', AppTheme.primary)),
+                const SizedBox(width: 10),
+                Expanded(child: _MiniStat('Present', '$present', AppTheme.accent)),
+                const SizedBox(width: 10),
+                Expanded(child: _MiniStat('Absent', '$absent', AppTheme.danger)),
+              ]),
+              const SizedBox(height: 14),
+              Row(children: [
+                Expanded(child: _MiniStat('On Leave', '$onLeave', AppTheme.warning)),
+                const SizedBox(width: 10),
+                Expanded(child: _MiniStat('Avg Attendance', '87%', AppTheme.info)),
+              ]),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text('Team Members', style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.textPrimary)),
+        const SizedBox(height: 10),
+        ...workers.map((w) => _WorkerCard(worker: w)).toList(),
       ],
     );
   }
@@ -124,28 +168,29 @@ class _WorkerCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0xFFE8F0EC))),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE8F0EC))),
       child: Row(children: [
         Container(
-          width: 48, height: 48,
+          width: 50,
+          height: 50,
           decoration: BoxDecoration(color: AppTheme.primary.withOpacity(0.08), shape: BoxShape.circle),
-          child: Center(child: Text(worker['avatar'] as String, style: const TextStyle(fontSize: 22))),
+          child: Center(child: Text(worker['avatar'] as String, style: const TextStyle(fontSize: 24))),
         ),
         const SizedBox(width: 14),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(worker['name'] as String, style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, fontSize: 14)),
+          Text(worker['name'] as String, style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, fontSize: 15)),
           Text(worker['role'] as String, style: GoogleFonts.plusJakartaSans(color: AppTheme.textSecondary, fontSize: 12)),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           Row(children: [
-            Icon(Icons.calendar_today_rounded, size: 12, color: AppTheme.textMuted),
-            const SizedBox(width: 4),
-            Text('${worker['days']} days this month', style: GoogleFonts.plusJakartaSans(fontSize: 11, color: AppTheme.textMuted)),
+            _MiniTag(label: '${worker['days']} days', color: AppTheme.surface),
+            const SizedBox(width: 8),
+            _MiniTag(label: worker['status'] as String, color: color),
           ]),
         ])),
         Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          Text(worker['pay'] as String, style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.w700, color: AppTheme.primary)),
+          const SizedBox(height: 8),
           StatusChip(label: worker['status'] as String, color: color),
-          const SizedBox(height: 6),
-          Text(worker['pay'] as String, style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w700, color: AppTheme.primary)),
         ]),
       ]),
     );
@@ -158,29 +203,52 @@ class _AttendanceTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final total = workers.length;
+    final present = workers.where((w) => w['status'] == 'Present').length;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text('Today — ${DateTime.now().toString().split(' ')[0]}', style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.textSecondary)),
+        Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE8F0EC))),
+          child: Row(children: [
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Attendance Summary', style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.w700, color: AppTheme.textPrimary)),
+              const SizedBox(height: 10),
+              Text('$present / $total present', style: GoogleFonts.plusJakartaSans(fontSize: 24, fontWeight: FontWeight.w700)),
+              const SizedBox(height: 6),
+              Text('Good attendance today', style: GoogleFonts.plusJakartaSans(fontSize: 12, color: AppTheme.textSecondary)),
+            ])),
+            CircularProgressIndicator(value: total == 0 ? 0 : present / total, backgroundColor: const Color(0xFFE8F0EC), valueColor: AlwaysStoppedAnimation(AppTheme.accent), strokeWidth: 6),
+          ]),
+        ),
+        const SizedBox(height: 18),
+        Text('Today’s Attendance', style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.textPrimary)),
         const SizedBox(height: 12),
         ...workers.map((w) {
           final isPresent = w['status'] == 'Present';
           return Container(
-            margin: const EdgeInsets.only(bottom: 10),
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE8F0EC))),
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE8F0EC))),
             child: Row(children: [
-              Text(w['avatar'] as String, style: const TextStyle(fontSize: 20)),
-              const SizedBox(width: 12),
-              Expanded(child: Text(w['name'] as String, style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600))),
-              Switch(
-                value: isPresent,
-                activeColor: AppTheme.accent,
-                onChanged: (_) {},
+              Text(w['avatar'] as String, style: const TextStyle(fontSize: 24)),
+              const SizedBox(width: 14),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(w['name'] as String, style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.w700)),
+                Text(w['role'] as String, style: GoogleFonts.plusJakartaSans(fontSize: 12, color: AppTheme.textSecondary)),
+              ])),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(color: isPresent ? AppTheme.accent.withOpacity(0.14) : AppTheme.danger.withOpacity(0.14), borderRadius: BorderRadius.circular(10)),
+                child: Text(
+                  w['status'] as String,
+                  style: GoogleFonts.plusJakartaSans(fontSize: 12, color: isPresent ? AppTheme.accent : AppTheme.danger, fontWeight: FontWeight.w700),
+                ),
               ),
             ]),
           );
-        }),
+        }).toList(),
       ],
     );
   }
@@ -192,43 +260,60 @@ class _PayrollTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final totalPay = workers.fold<double>(0, (sum, w) => sum + double.parse((w['pay'] as String).replaceAll('৳', '').replaceAll(',', '')));
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(colors: [AppTheme.primary, Color(0xFF024A37)]),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(children: [
-            Text('Total Payroll — May 2025', style: GoogleFonts.plusJakartaSans(fontSize: 12, color: Colors.white60)),
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE8F0EC))),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Payroll Summary', style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.w700, color: AppTheme.textPrimary)),
+            const SizedBox(height: 10),
+            Text('৳${totalPay.toStringAsFixed(0)}', style: GoogleFonts.playfairDisplay(fontSize: 32, fontWeight: FontWeight.w700, color: AppTheme.primary)),
             const SizedBox(height: 6),
-            Text('৳48,500', style: GoogleFonts.playfairDisplay(fontSize: 32, fontWeight: FontWeight.w700, color: Colors.white)),
-            const SizedBox(height: 12),
+            Text('Total monthly payout for current active workers', style: GoogleFonts.plusJakartaSans(fontSize: 12, color: AppTheme.textSecondary)),
+            const SizedBox(height: 14),
             ElevatedButton(
               onPressed: () {},
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: AppTheme.primary, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-              child: Text('Process Payroll', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700)),
+              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), padding: const EdgeInsets.symmetric(vertical: 14)),
+              child: Text('Run Payroll', style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white)),
             ),
           ]),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 18),
+        Text('Upcoming Payments', style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.textPrimary)),
+        const SizedBox(height: 12),
         ...workers.map((w) => Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE8F0EC))),
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: const Color(0xFFE8F0EC))),
           child: Row(children: [
-            Text(w['avatar'] as String, style: const TextStyle(fontSize: 20)),
-            const SizedBox(width: 12),
+            Text(w['avatar'] as String, style: const TextStyle(fontSize: 24)),
+            const SizedBox(width: 14),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(w['name'] as String, style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600)),
-              Text('${w['days']} days × daily rate', style: GoogleFonts.plusJakartaSans(fontSize: 11, color: AppTheme.textSecondary)),
+              Text(w['name'] as String, style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.w700)),
+              Text(w['role'] as String, style: GoogleFonts.plusJakartaSans(fontSize: 12, color: AppTheme.textSecondary)),
             ])),
             Text(w['pay'] as String, style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.w700, color: AppTheme.primary)),
           ]),
-        )),
+        )).toList(),
       ],
+    );
+  }
+}
+
+class _MiniTag extends StatelessWidget {
+  final String label;
+  final Color color;
+  const _MiniTag({required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(color: color.withOpacity(0.12), borderRadius: BorderRadius.circular(8)),
+      child: Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 10, color: AppTheme.textPrimary, fontWeight: FontWeight.w600)),
     );
   }
 }

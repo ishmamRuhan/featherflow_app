@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../core/routes.dart';
 import '../core/theme.dart';
 
 // ─── App Drawer (User role) ───────────────────────────────────────────────────
@@ -52,20 +53,20 @@ class UserDrawer extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 8),
               children: [
                 _drawerSection('Main'),
-                _drawerTile(context, Icons.dashboard_rounded, 'Dashboard', '/user/dashboard'),
-                _drawerTile(context, Icons.bug_report_rounded, 'Disease Detection', '/user/disease'),
-                _drawerTile(context, Icons.map_rounded, 'Vet Map', '/user/vet-map'),
-                _drawerTile(context, Icons.medical_services_rounded, 'Connect Doctors', '/user/doctors'),
+                _drawerTile(context, Icons.dashboard_rounded, 'Dashboard', AppRoutes.userDashboard),
+                _drawerTile(context, Icons.bug_report_rounded, 'Disease Detection', AppRoutes.disease),
+                _drawerTile(context, Icons.map_rounded, 'Vet Map', AppRoutes.vetMap),
+                _drawerTile(context, Icons.medical_services_rounded, 'Connect Doctors', AppRoutes.userDoctors),
                 _drawerSection('Management'),
-                _drawerTile(context, Icons.people_rounded, 'Labor', '/user/labor', premium: true),
-                _drawerTile(context, Icons.account_balance_wallet_rounded, 'Cost', '/user/cost', premium: true),
-                _drawerTile(context, Icons.set_meal_rounded, 'Feed', '/user/feed'),
-                _drawerTile(context, Icons.calculate_rounded, 'Tax', '/user/tax', premium: true),
-                _drawerTile(context, Icons.thermostat_rounded, 'Environmental', '/user/environmental'),
+                _drawerTile(context, Icons.people_rounded, 'Labor', AppRoutes.labor, premium: true),
+                _drawerTile(context, Icons.account_balance_wallet_rounded, 'Cost', AppRoutes.cost, premium: true),
+                _drawerTile(context, Icons.set_meal_rounded, 'Feed', AppRoutes.feed),
+                _drawerTile(context, Icons.calculate_rounded, 'Tax', AppRoutes.tax, premium: true),
+                _drawerTile(context, Icons.thermostat_rounded, 'Environmental', AppRoutes.environmental),
                 _drawerSection('Community'),
-                _drawerTile(context, Icons.shopping_bag_rounded, 'Marketplace', '/user/marketplace'),
-                _drawerTile(context, Icons.article_rounded, 'Blog', '/user/blogging'),
-                _drawerTile(context, Icons.book_rounded, 'Articles', '/user/articles'),
+                _drawerTile(context, Icons.shopping_bag_rounded, 'Marketplace', AppRoutes.marketplace),
+                _drawerTile(context, Icons.article_rounded, 'Blog', AppRoutes.blogging),
+                _drawerTile(context, Icons.book_rounded, 'Articles', AppRoutes.articles),
               ],
             ),
           ),
@@ -74,7 +75,7 @@ class UserDrawer extends StatelessWidget {
             child: SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
+                onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.login),
                 icon: const Icon(Icons.logout_rounded, size: 18),
                 label: Text('Sign Out', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600)),
                 style: OutlinedButton.styleFrom(

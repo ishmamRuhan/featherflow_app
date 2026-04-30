@@ -7,6 +7,13 @@ import '../screens/user/labor.dart' as labor_screen;
 import '../screens/user/feed_management.dart';
 import '../screens/user/cost_management.dart';
 import '../screens/user/disease_detection.dart';
+import '../screens/user/marketplace.dart';
+import '../screens/user/blogging.dart';
+import '../screens/user/vet_map.dart';
+import '../screens/user/tax.dart';
+import '../screens/user/environmental.dart';
+import '../screens/user/articles.dart';
+import '../screens/user/doctors.dart';
 
 // TEMP PLACEHOLDERS (to stop crashes)
 class _Placeholder extends StatelessWidget {
@@ -31,13 +38,13 @@ class AppRoutes {
   static const cost = '/user/cost';
   static const feed = '/user/feed';
   static const disease = '/user/disease';
-
-  // TEMP missing modules (fix crash)
   static const marketplace = '/user/marketplace';
   static const blogging = '/user/blogging';
   static const vetMap = '/user/vet-map';
   static const tax = '/user/tax';
   static const environmental = '/user/environmental';
+  static const articles = '/user/articles';
+  static const userDoctors = '/user/doctors';
 
   // ADMIN placeholders
   static const adminDashboard = '/admin/dashboard';
@@ -55,12 +62,13 @@ class AppRoutes {
         cost: (_) => const CostManagementScreen(),
         feed: (_) => const FeedManagementScreen(),
         disease: (_) => const DiseaseDetectionScreen(),
-        // placeholders
-        marketplace: (_) => const _Placeholder("Marketplace"),
-        blogging: (_) => const _Placeholder("Blogging"),
-        vetMap: (_) => const _Placeholder("Vet Map"),
-        tax: (_) => const _Placeholder("Tax Calculation"),
-        environmental: (_) => const _Placeholder("Environment"),
+        marketplace: (_) => const MarketplaceScreen(),
+        blogging: (_) => const BloggingScreen(),
+        vetMap: (_) => const VetMapScreen(),
+        tax: (_) => const TaxManagementScreen(),
+        environmental: (_) => const EnvironmentalScreen(),
+        articles: (_) => const ArticlesScreen(),
+        userDoctors: (_) => const DoctorsScreen(),
         adminDashboard: (_) => const _Placeholder("Admin Dashboard"),
         doctorDashboard: (_) => const _Placeholder("Doctor Dashboard"),
         deliveryDashboard: (_) => const _Placeholder("Delivery Dashboard"),
