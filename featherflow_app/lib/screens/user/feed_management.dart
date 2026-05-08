@@ -79,16 +79,16 @@ class _FeedManagementScreenState extends State<FeedManagementScreen>
   ];
 
   final List<Map<String, dynamic>> _nutritionData = [
-    {'label': 'Protein', 'value': 21.5, 'unit': '%', 'target': 22.0, 'color': Color(0xFF4CAF82)},
-    {'label': 'Energy', 'value': 3100, 'unit': 'kcal', 'target': 3200, 'color': Color(0xFFF4C552)},
-    {'label': 'Calcium', 'value': 0.9, 'unit': '%', 'target': 1.0, 'color': Color(0xFF29B6F6)},
-    {'label': 'Phosphorus', 'value': 0.45, 'unit': '%', 'target': 0.50, 'color': Color(0xFFE53935)},
+    {'label': 'Protein', 'value': 21.5, 'unit': '%', 'target': 22.0, 'color': const Color(0xFF4CAF82)},
+    {'label': 'Energy', 'value': 3100, 'unit': 'kcal', 'target': 3200, 'color': const Color(0xFFF4C552)},
+    {'label': 'Calcium', 'value': 0.9, 'unit': '%', 'target': 1.0, 'color': const Color(0xFF29B6F6)},
+    {'label': 'Phosphorus', 'value': 0.45, 'unit': '%', 'target': 0.50, 'color': const Color(0xFFE53935)},
   ];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 6, vsync: this);
   }
 
   @override
@@ -128,18 +128,24 @@ class _FeedManagementScreenState extends State<FeedManagementScreen>
           labelStyle: GoogleFonts.plusJakartaSans(
               fontSize: 12, fontWeight: FontWeight.w600),
           tabs: const [
-            Tab(text: 'Schedule'),
             Tab(text: 'Stock'),
-            Tab(text: 'Nutrition'),
+            Tab(text: 'Purchases'),
+            Tab(text: 'Consumption'),
+            Tab(text: 'Suppliers'),
+            Tab(text: 'Reports'),
+            Tab(text: 'Payments'),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildScheduleTab(),
           _buildStockTab(),
-          _buildNutritionTab(),
+          _buildPurchasesTab(),
+          _buildConsumptionTab(),
+          _buildSuppliersTab(),
+          _buildReportsTab(),
+          _buildPaymentsTab(),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -160,8 +166,8 @@ class _FeedManagementScreenState extends State<FeedManagementScreen>
 
   Widget _buildScheduleTab() {
     // Daily consumption summary
-    final totalConsumed = 185; // kg
-    final totalBirds = 6500;
+    const totalConsumed = 185; // kg
+    const totalBirds = 6500;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -181,7 +187,7 @@ class _FeedManagementScreenState extends State<FeedManagementScreen>
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _statChip('Today\'s Total', '$totalConsumed kg', Icons.scale_rounded),
-                _statChip('Birds', '${totalBirds}', Icons.egg_outlined),
+                _statChip('Birds', '$totalBirds', Icons.egg_outlined),
                 _statChip('Per Bird', '${(totalConsumed * 1000 / totalBirds).toStringAsFixed(0)}g', Icons.restaurant_outlined),
               ],
             ),
@@ -405,6 +411,166 @@ class _FeedManagementScreenState extends State<FeedManagementScreen>
             ),
           ),
           const SizedBox(height: 80),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPurchasesTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('FEED PURCHASE RECORDS',
+              style: GoogleFonts.plusJakartaSans(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textSecondary,
+                  letterSpacing: 0.8)),
+          const SizedBox(height: 12),
+          // Placeholder for purchase records
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFE8F0EC)),
+            ),
+            child: Center(
+              child: Text('Purchase records will be displayed here',
+                  style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14, color: AppTheme.textSecondary)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildConsumptionTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('FEED CONSUMPTION LOGS',
+              style: GoogleFonts.plusJakartaSans(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textSecondary,
+                  letterSpacing: 0.8)),
+          const SizedBox(height: 12),
+          // Placeholder for consumption logs
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFE8F0EC)),
+            ),
+            child: Center(
+              child: Text('Consumption logs and batch/flock usage will be displayed here',
+                  style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14, color: AppTheme.textSecondary)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSuppliersTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('FEED SUPPLIERS',
+              style: GoogleFonts.plusJakartaSans(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textSecondary,
+                  letterSpacing: 0.8)),
+          const SizedBox(height: 12),
+          // Placeholder for suppliers
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFE8F0EC)),
+            ),
+            child: Center(
+              child: Text('Supplier management and low stock alerts will be displayed here',
+                  style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14, color: AppTheme.textSecondary)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReportsTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('FEED REPORTS',
+              style: GoogleFonts.plusJakartaSans(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textSecondary,
+                  letterSpacing: 0.8)),
+          const SizedBox(height: 12),
+          // Placeholder for reports
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFE8F0EC)),
+            ),
+            child: Center(
+              child: Text('Monthly, yearly, and lifetime feed reports with export options will be displayed here',
+                  style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14, color: AppTheme.textSecondary)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPaymentsTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('FEED PAYMENTS',
+              style: GoogleFonts.plusJakartaSans(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textSecondary,
+                  letterSpacing: 0.8)),
+          const SizedBox(height: 12),
+          // Placeholder for payments
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFE8F0EC)),
+            ),
+            child: Center(
+              child: Text('Feed payment section and cost tracking will be displayed here',
+                  style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14, color: AppTheme.textSecondary)),
+            ),
+          ),
         ],
       ),
     );

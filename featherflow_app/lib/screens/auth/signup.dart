@@ -18,6 +18,9 @@ class _SignupScreenState extends State<SignupScreen>
   String _selectedRole = 'Farmer';
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
+  bool _consentTerms = false;
+  bool _consentBackground = false;
+  bool _consentConfidentiality = false;
 
   // All 6 roles — same as login
   final List<String> roles = [
@@ -171,11 +174,44 @@ class _SignupScreenState extends State<SignupScreen>
           _sectionLabel('FARM DETAILS'),
           _field(label: 'Farm Name', hint: 'Green Valley Poultry', icon: Icons.home_work_outlined),
           _gap(),
-          _field(label: 'Farm Location / District', hint: 'e.g. Gazipur, Dhaka', icon: Icons.location_on_outlined),
+          _field(label: 'Farm Owner/Manager Name', hint: 'Owner name', icon: Icons.person_outline_rounded),
           _gap(),
-          _field(label: 'Total Bird Capacity', hint: 'e.g. 5000', icon: Icons.egg_outlined, keyboardType: TextInputType.number),
+          _field(label: 'Farm Location and Exact Address', hint: 'District, full address', icon: Icons.location_on_outlined),
           _gap(),
-          _dropdown(label: 'Farm Type', icon: Icons.category_outlined, items: ['Broiler', 'Layer', 'Breeder', 'Hatchery', 'Mixed']),
+          _dropdown(label: 'Farm Type', icon: Icons.category_outlined, items: ['Broiler', 'Layer', 'Breeder', 'Hatchery', 'Mixed', 'Backyard']),
+          _gap(),
+          _field(label: 'Number of Birds Currently Kept', hint: 'e.g. 5000', icon: Icons.egg_outlined, keyboardType: TextInputType.number),
+          _gap(),
+          _field(label: 'Farm Registration/Licensing Number', hint: 'Registration number', icon: Icons.verified_outlined),
+          _gap(),
+          _field(label: 'Years in Poultry Farming', hint: 'e.g. 5', icon: Icons.timeline_outlined, keyboardType: TextInputType.number),
+          _gap(),
+          _dropdown(label: 'Experience Level', icon: Icons.star_outline, items: ['Beginner', 'Intermediate', 'Advanced', 'Expert']),
+          _gap(),
+          _field(label: 'Primary Disease/Issues Faced', hint: 'e.g. Newcastle, Coccidiosis', icon: Icons.sick_outlined),
+          _gap(),
+          _field(label: 'Feed Type and Sourcing Method', hint: 'e.g. Commercial, Local', icon: Icons.grass_rounded),
+          _gap(),
+          _field(label: 'Existing Vet or Consultant', hint: 'Vet name or N/A', icon: Icons.medical_services_rounded),
+          _gap(),
+          _field(label: 'Academic Background (Optional)', hint: 'Degree or N/A', icon: Icons.school_outlined),
+          _gap(),
+          _field(label: 'Number of Active Workers', hint: 'e.g. 10', icon: Icons.people_outlined, keyboardType: TextInputType.number),
+          _gap(),
+          Row(
+            children: [
+              Checkbox(
+                value: _consentBackground,
+                onChanged: (v) => setState(() => _consentBackground = v ?? false),
+              ),
+              Expanded(
+                child: Text(
+                  'Consent for flock health and performance tracking',
+                  style: GoogleFonts.plusJakartaSans(fontSize: 12),
+                ),
+              ),
+            ],
+          ),
         ],
       );
 
@@ -183,11 +219,59 @@ class _SignupScreenState extends State<SignupScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _sectionLabel('ADMIN DETAILS'),
-          _field(label: 'Organization / Company', hint: 'e.g. Featherflow HQ', icon: Icons.business_outlined),
+          _field(label: 'Account ID Number', hint: 'Admin ID', icon: Icons.account_circle_outlined),
           _gap(),
-          _field(label: 'Admin Invite Code', hint: 'Enter your invite key', icon: Icons.vpn_key_outlined),
+          _field(label: 'Job Title', hint: 'e.g. Operations Manager', icon: Icons.work_outline_rounded),
           _gap(),
-          _dropdown(label: 'Admin Role Level', icon: Icons.shield_outlined, items: ['Super Admin', 'Operations Admin', 'Support Admin']),
+          _field(label: 'Department', hint: 'e.g. IT, HR', icon: Icons.business_outlined),
+          _gap(),
+          _field(label: 'Reporting Manager', hint: 'Manager name', icon: Icons.supervisor_account_outlined),
+          _gap(),
+          _field(label: 'Work Location', hint: 'Office location', icon: Icons.location_city_outlined),
+          _gap(),
+          _dropdown(label: 'Employment Type', icon: Icons.schedule_outlined, items: ['Full-time', 'Part-time', 'Contract']),
+          _gap(),
+          _field(label: 'Start Date', hint: 'DD/MM/YYYY', icon: Icons.date_range_outlined),
+          _gap(),
+          _dropdown(label: 'Access Level Requested', icon: Icons.security_outlined, items: ['Basic', 'Standard', 'Admin', 'Super Admin']),
+          _gap(),
+          _field(label: 'Prior Admin/Operations Experience', hint: 'Years or description', icon: Icons.work_outline_rounded),
+          _gap(),
+          _dropdown(label: 'Basic Tech Skill Level', icon: Icons.computer_outlined, items: ['Beginner', 'Intermediate', 'Advanced']),
+          _gap(),
+          _field(label: 'Previous Work Experience', hint: 'Company and role', icon: Icons.history_outlined),
+          _gap(),
+          Row(
+            children: [
+              Checkbox(
+                value: _consentConfidentiality,
+                onChanged: (v) => setState(() => _consentConfidentiality = v ?? false),
+              ),
+              Expanded(
+                child: Text(
+                  'Confidentiality agreement acceptance',
+                  style: GoogleFonts.plusJakartaSans(fontSize: 12),
+                ),
+              ),
+            ],
+          ),
+          _gap(),
+          Row(
+            children: [
+              Checkbox(
+                value: _consentBackground,
+                onChanged: (v) => setState(() => _consentBackground = v ?? false),
+              ),
+              Expanded(
+                child: Text(
+                  'Background check consent',
+                  style: GoogleFonts.plusJakartaSans(fontSize: 12),
+                ),
+              ),
+            ],
+          ),
+          _gap(),
+          _field(label: 'Approved by Admin Name and ID', hint: 'Approver details', icon: Icons.verified_user_outlined),
         ],
       );
 
@@ -195,15 +279,52 @@ class _SignupScreenState extends State<SignupScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _sectionLabel('PROFESSIONAL DETAILS'),
-          _field(label: 'Veterinary License No.', hint: 'VET-2024-XXXXX', icon: Icons.badge_outlined),
+          _field(label: 'Clinic/Hospital Name', hint: 'Clinic name', icon: Icons.local_hospital_outlined),
           _gap(),
-          _field(label: 'Specialization', hint: 'e.g. Poultry Health, Avian Medicine', icon: Icons.biotech_outlined),
+          _field(label: 'Practice Address', hint: 'Full address', icon: Icons.location_on_outlined),
           _gap(),
-          _field(label: 'Hospital / Clinic Name', hint: 'e.g. Dhaka Vet Clinic', icon: Icons.local_hospital_outlined),
+          _field(label: 'Veterinary Degree', hint: 'Degree name', icon: Icons.school_outlined),
           _gap(),
-          _field(label: 'Service Area / District', hint: 'e.g. Dhaka, Gazipur', icon: Icons.map_outlined),
+          _field(label: 'University Name', hint: 'University', icon: Icons.account_balance_outlined),
+          _gap(),
+          _field(label: 'Graduation Year', hint: 'e.g. 2015', icon: Icons.calendar_view_day_outlined, keyboardType: TextInputType.number),
+          _gap(),
+          _field(label: 'License/Registration Number', hint: 'License number', icon: Icons.badge_outlined),
+          _gap(),
+          _field(label: 'License Issuing Authority', hint: 'Authority name', icon: Icons.gavel_outlined),
+          _gap(),
+          _field(label: 'License Expiry Date', hint: 'DD/MM/YYYY', icon: Icons.date_range_outlined),
+          _gap(),
+          _field(label: 'Specialty or Poultry Focus Area', hint: 'e.g. Poultry Health', icon: Icons.biotech_outlined),
           _gap(),
           _field(label: 'Years of Experience', hint: 'e.g. 5', icon: Icons.workspace_premium_outlined, keyboardType: TextInputType.number),
+          _gap(),
+          _field(label: 'Current Workplace', hint: 'Workplace name', icon: Icons.business_center_outlined),
+          _gap(),
+          _dropdown(label: 'Consultation Mode', icon: Icons.video_call_outlined, items: ['Online', 'Offline', 'Both']),
+          _gap(),
+          _field(label: 'Consultation Fees', hint: 'Fee amount', icon: Icons.attach_money_outlined, keyboardType: TextInputType.number),
+          _gap(),
+          _field(label: 'Prescription Authority', hint: 'Yes/No', icon: Icons.edit_outlined),
+          _gap(),
+          _field(label: 'Emergency/On-call Availability', hint: 'Yes/No', icon: Icons.access_time_outlined),
+          _gap(),
+          _field(label: 'Referral Network', hint: 'Network details', icon: Icons.group_outlined),
+          _gap(),
+          Row(
+            children: [
+              Checkbox(
+                value: _consentTerms,
+                onChanged: (v) => setState(() => _consentTerms = v ?? false),
+              ),
+              Expanded(
+                child: Text(
+                  'Consent to treatment guidelines',
+                  style: GoogleFonts.plusJakartaSans(fontSize: 12),
+                ),
+              ),
+            ],
+          ),
         ],
       );
 
@@ -211,15 +332,46 @@ class _SignupScreenState extends State<SignupScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _sectionLabel('DELIVERY DETAILS'),
-          _field(label: 'National ID No.', hint: 'NID number', icon: Icons.badge_outlined),
+          _field(label: 'Driver\'s License Number', hint: 'License number', icon: Icons.drive_eta_outlined),
           _gap(),
-          _field(label: 'Vehicle Type', hint: 'e.g. Motorcycle, Van, Truck', icon: Icons.local_shipping_outlined),
+          _field(label: 'License Expiry Date', hint: 'DD/MM/YYYY', icon: Icons.date_range_outlined),
           _gap(),
-          _field(label: 'Vehicle Registration No.', hint: 'e.g. DHA-12-3456', icon: Icons.directions_car_outlined),
+          _dropdown(label: 'Vehicle Type', icon: Icons.local_shipping_outlined, items: ['Motorcycle', 'Van', 'Truck', 'Car']),
           _gap(),
-          _field(label: 'Delivery Zone / Area', hint: 'e.g. Dhaka North, Gazipur', icon: Icons.location_on_outlined),
+          _field(label: 'Vehicle Registration Number', hint: 'e.g. DHA-12-3456', icon: Icons.directions_car_outlined),
           _gap(),
-          _dropdown(label: 'Employment Type', icon: Icons.work_outline_rounded, items: ['Full-time', 'Part-time', 'Freelance']),
+          _field(label: 'Vehicle Insurance Details', hint: 'Insurance info', icon: Icons.shield_outlined),
+          _gap(),
+          _field(label: 'Proof of Right to Work', hint: 'Document details', icon: Icons.verified_outlined),
+          _gap(),
+          _field(label: 'Emergency Contact', hint: 'Name and phone', icon: Icons.contact_phone_outlined),
+          _gap(),
+          _field(label: 'Prior Delivery Experience', hint: 'Years or description', icon: Icons.delivery_dining_rounded),
+          _gap(),
+          _field(label: 'Area Coverage', hint: 'Areas served', icon: Icons.map_outlined),
+          _gap(),
+          _field(label: 'Availability/Schedule', hint: 'e.g. Full-time, Weekends', icon: Icons.schedule_outlined),
+          _gap(),
+          _field(label: 'Banking/Mobile Wallet Details', hint: 'Account details', icon: Icons.account_balance_wallet_outlined),
+          _gap(),
+          _field(label: 'Previous Work Experience', hint: 'Company and role', icon: Icons.history_outlined),
+          _gap(),
+          Row(
+            children: [
+              Checkbox(
+                value: _consentBackground,
+                onChanged: (v) => setState(() => _consentBackground = v ?? false),
+              ),
+              Expanded(
+                child: Text(
+                  'Background check consent',
+                  style: GoogleFonts.plusJakartaSans(fontSize: 12),
+                ),
+              ),
+            ],
+          ),
+          _gap(),
+          _field(label: 'Approved by Admin Name and ID', hint: 'Approver details', icon: Icons.verified_user_outlined),
         ],
       );
 
@@ -227,15 +379,54 @@ class _SignupScreenState extends State<SignupScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _sectionLabel('PHARMACY DETAILS'),
-          _field(label: 'Pharmacy / Shop Name', hint: 'e.g. AgriMed Pharmacy', icon: Icons.store_outlined),
+          _field(label: 'Business/Organization Name', hint: 'Pharmacy name', icon: Icons.business_outlined),
           _gap(),
-          _field(label: 'Drug License No.', hint: 'DL-XXXXX', icon: Icons.verified_outlined),
+          _field(label: 'Authorized Contact Person', hint: 'Contact name', icon: Icons.person_outline_rounded),
           _gap(),
-          _field(label: 'Location / District', hint: 'e.g. Mymensingh', icon: Icons.location_on_outlined),
+          _field(label: 'Business Registration Number', hint: 'Registration number', icon: Icons.verified_outlined),
           _gap(),
-          _dropdown(label: 'Pharmacy Type', icon: Icons.category_outlined, items: ['Veterinary', 'Agricultural', 'General + Vet']),
+          _field(label: 'Trade License', hint: 'License number', icon: Icons.description_outlined),
           _gap(),
-          _field(label: 'Contact Person Name', hint: 'Manager or owner name', icon: Icons.person_outline_rounded),
+          _field(label: 'Tax/VAT/TIN Number', hint: 'Tax number', icon: Icons.account_balance_outlined),
+          _gap(),
+          _field(label: 'Business and Warehouse Address', hint: 'Full address', icon: Icons.location_on_outlined),
+          _gap(),
+          _field(label: 'Number of Pharmacists', hint: 'e.g. 5', icon: Icons.people_outlined, keyboardType: TextInputType.number),
+          _gap(),
+          _field(label: 'Responsible Pharmacist Name', hint: 'Pharmacist name', icon: Icons.medical_services_rounded),
+          _gap(),
+          _field(label: 'Pharmacist License/Registration Number', hint: 'License number', icon: Icons.badge_outlined),
+          _gap(),
+          _field(label: 'Pharmacy Council Registration Number', hint: 'Council number', icon: Icons.gavel_outlined),
+          _gap(),
+          _field(label: 'Professional License Expiry Date', hint: 'DD/MM/YYYY', icon: Icons.date_range_outlined),
+          _gap(),
+          _field(label: 'List of Permitted Products', hint: 'Products list', icon: Icons.list_alt_outlined),
+          _gap(),
+          _field(label: 'Storage/Cold-Chain Capability', hint: 'Yes/No details', icon: Icons.ac_unit_outlined),
+          _gap(),
+          _field(label: 'Delivery Coverage Area', hint: 'Areas covered', icon: Icons.map_outlined),
+          _gap(),
+          _field(label: 'Returns/Expiry Handling Policy', hint: 'Policy details', icon: Icons.policy_outlined),
+          _gap(),
+          _field(label: 'Bank Account for Settlement', hint: 'Account details', icon: Icons.account_balance_outlined),
+          _gap(),
+          _field(label: 'Authorized Signatory Details', hint: 'Signatory info', icon: Icons.edit_outlined),
+          _gap(),
+          Row(
+            children: [
+              Checkbox(
+                value: _consentTerms,
+                onChanged: (v) => setState(() => _consentTerms = v ?? false),
+              ),
+              Expanded(
+                child: Text(
+                  'Agreement to product quality and prescription rules',
+                  style: GoogleFonts.plusJakartaSans(fontSize: 12),
+                ),
+              ),
+            ],
+          ),
         ],
       );
 
@@ -243,13 +434,67 @@ class _SignupScreenState extends State<SignupScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _sectionLabel('RESEARCH PROFILE'),
-          _field(label: 'Institution / University', hint: 'e.g. BAU, Mymensingh', icon: Icons.school_outlined),
+          _field(label: 'Institution/Company Name', hint: 'Institution name', icon: Icons.business_outlined),
           _gap(),
-          _field(label: 'Research Field', hint: 'e.g. Avian Diseases, Genetics', icon: Icons.science_outlined),
+          _field(label: 'Institutional Email', hint: 'email@institution.com', icon: Icons.email_outlined, keyboardType: TextInputType.emailAddress),
           _gap(),
-          _field(label: 'Academic Degree', hint: 'e.g. PhD, MSc in Poultry Science', icon: Icons.menu_book_outlined),
+          _field(label: 'Phone Number', hint: '+880 1700 000000', icon: Icons.phone_outlined, keyboardType: TextInputType.phone),
           _gap(),
-          _field(label: 'ORCID / ResearchGate ID (optional)', hint: '0000-0000-0000-0000', icon: Icons.link_outlined),
+          _field(label: 'Department', hint: 'Department name', icon: Icons.business_center_outlined),
+          _gap(),
+          _field(label: 'Highest Academic Degree', hint: 'e.g. PhD', icon: Icons.school_outlined),
+          _gap(),
+          _field(label: 'Field of Study', hint: 'Study field', icon: Icons.science_outlined),
+          _gap(),
+          _field(label: 'University/College Name', hint: 'University name', icon: Icons.account_balance_outlined),
+          _gap(),
+          _field(label: 'Year of Graduation', hint: 'e.g. 2010', icon: Icons.calendar_view_day_outlined, keyboardType: TextInputType.number),
+          _gap(),
+          _field(label: 'Areas of Expertise', hint: 'Expertise areas', icon: Icons.lightbulb_outlined),
+          _gap(),
+          _field(label: 'Years of Research Experience', hint: 'e.g. 10', icon: Icons.timeline_outlined, keyboardType: TextInputType.number),
+          _gap(),
+          _field(label: 'Poultry-Specific Experience', hint: 'Experience details', icon: Icons.egg_alt_rounded),
+          _gap(),
+          _field(label: 'Software/Data Analysis Skills', hint: 'Skills list', icon: Icons.computer_outlined),
+          _gap(),
+          _field(label: 'Access to Lab/Institution', hint: 'Yes/No', icon: Icons.location_city_outlined),
+          _gap(),
+          _field(label: 'Research Role Type', hint: 'e.g. Researcher, Professor', icon: Icons.person_outline_rounded),
+          _gap(),
+          _field(label: 'Ethics/Training Certificate', hint: 'Certificate details', icon: Icons.verified_outlined),
+          _gap(),
+          _field(label: 'Reference Information', hint: 'References', icon: Icons.group_outlined),
+          _gap(),
+          Row(
+            children: [
+              Checkbox(
+                value: _consentTerms,
+                onChanged: (v) => setState(() => _consentTerms = v ?? false),
+              ),
+              Expanded(
+                child: Text(
+                  'Publication consent and IP agreement',
+                  style: GoogleFonts.plusJakartaSans(fontSize: 12),
+                ),
+              ),
+            ],
+          ),
+          _gap(),
+          Row(
+            children: [
+              Checkbox(
+                value: _consentBackground,
+                onChanged: (v) => setState(() => _consentBackground = v ?? false),
+              ),
+              Expanded(
+                child: Text(
+                  'Conflict of interest declaration',
+                  style: GoogleFonts.plusJakartaSans(fontSize: 12),
+                ),
+              ),
+            ],
+          ),
         ],
       );
 
@@ -462,6 +707,50 @@ class _SignupScreenState extends State<SignupScreen>
                             _gap(),
                             _field(label: 'Phone Number', hint: '+880 1700 000000', icon: Icons.phone_outlined, keyboardType: TextInputType.phone),
                             _gap(),
+                            _sectionLabel('ADDITIONAL INFO'),
+                            _field(label: 'National ID or Passport Number', hint: 'Enter ID number', icon: Icons.badge_outlined),
+                            _gap(),
+                            _field(label: 'Date of Birth', hint: 'DD/MM/YYYY', icon: Icons.calendar_today_outlined),
+                            _gap(),
+                            _field(label: 'Present Address', hint: 'Full address', icon: Icons.location_on_outlined),
+                            _gap(),
+                            _dropdown(label: 'Preferred Language', icon: Icons.language_outlined, items: ['English', 'Bengali', 'Hindi']),
+                            _gap(),
+                            _field(label: 'Emergency Contact', hint: 'Name and phone', icon: Icons.contact_phone_outlined),
+                            _gap(),
+                            _field(label: 'Bank/Mobile Payment Details', hint: 'Account or mobile number', icon: Icons.account_balance_outlined),
+                            _gap(),
+                            _field(label: 'Location/Service Area', hint: 'e.g. Dhaka, Gazipur', icon: Icons.map_outlined),
+                            _gap(),
+                            // Consents
+                            Row(
+                              children: [
+                                Checkbox(
+                                  value: _consentTerms,
+                                  onChanged: (v) => setState(() => _consentTerms = v ?? false),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    'I agree to the terms, privacy policy, and background verification',
+                                    style: GoogleFonts.plusJakartaSans(fontSize: 12),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Checkbox(
+                                  value: _consentBackground,
+                                  onChanged: (v) => setState(() => _consentBackground = v ?? false),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    'Consent for background check',
+                                    style: GoogleFonts.plusJakartaSans(fontSize: 12),
+                                  ),
+                                ),
+                              ],
+                            ),
 
                             // ── Role-specific fields ──
                             AnimatedSwitcher(

@@ -15,7 +15,7 @@ class _LaborScreenState extends State<LaborScreen> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 6, vsync: this);
   }
   @override
   void dispose() { _tabController.dispose(); super.dispose(); }
@@ -55,7 +55,7 @@ class _LaborScreenState extends State<LaborScreen> with SingleTickerProviderStat
           unselectedLabelColor: Colors.white60,
           indicatorColor: AppTheme.accentLight,
           labelStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, fontSize: 13),
-          tabs: const [Tab(text: 'Workers'), Tab(text: 'Attendance'), Tab(text: 'Payroll')],
+          tabs: const [Tab(text: 'Workers'), Tab(text: 'Attendance'), Tab(text: 'Scheduling'), Tab(text: 'Performance'), Tab(text: 'Reports'), Tab(text: 'Analytics')],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -66,7 +66,7 @@ class _LaborScreenState extends State<LaborScreen> with SingleTickerProviderStat
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [_WorkersTab(workers: _workers), _AttendanceTab(workers: _workers), _PayrollTab(workers: _workers)],
+        children: [_WorkersTab(workers: _workers), _AttendanceTab(workers: _workers), _SchedulingTab(), _PerformanceTab(), _ReportsTab(), _AnalyticsTab()],
       ),
     );
   }
@@ -143,7 +143,7 @@ class _WorkersTab extends StatelessWidget {
               Row(children: [
                 Expanded(child: _MiniStat('On Leave', '$onLeave', AppTheme.warning)),
                 const SizedBox(width: 10),
-                Expanded(child: _MiniStat('Avg Attendance', '87%', AppTheme.info)),
+                const Expanded(child: _MiniStat('Avg Attendance', '87%', AppTheme.info)),
               ]),
             ],
           ),
@@ -151,7 +151,7 @@ class _WorkersTab extends StatelessWidget {
         const SizedBox(height: 20),
         Text('Team Members', style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.textPrimary)),
         const SizedBox(height: 10),
-        ...workers.map((w) => _WorkerCard(worker: w)).toList(),
+        ...workers.map((w) => _WorkerCard(worker: w)),
       ],
     );
   }
@@ -219,7 +219,7 @@ class _AttendanceTab extends StatelessWidget {
               const SizedBox(height: 6),
               Text('Good attendance today', style: GoogleFonts.plusJakartaSans(fontSize: 12, color: AppTheme.textSecondary)),
             ])),
-            CircularProgressIndicator(value: total == 0 ? 0 : present / total, backgroundColor: const Color(0xFFE8F0EC), valueColor: AlwaysStoppedAnimation(AppTheme.accent), strokeWidth: 6),
+            CircularProgressIndicator(value: total == 0 ? 0 : present / total, backgroundColor: const Color(0xFFE8F0EC), valueColor: const AlwaysStoppedAnimation(AppTheme.accent), strokeWidth: 6),
           ]),
         ),
         const SizedBox(height: 18),
@@ -248,7 +248,7 @@ class _AttendanceTab extends StatelessWidget {
               ),
             ]),
           );
-        }).toList(),
+        }),
       ],
     );
   }
@@ -297,7 +297,111 @@ class _PayrollTab extends StatelessWidget {
             ])),
             Text(w['pay'] as String, style: GoogleFonts.plusJakartaSans(fontSize: 14, fontWeight: FontWeight.w700, color: AppTheme.primary)),
           ]),
-        )).toList(),
+        )),
+      ],
+    );
+  }
+}
+
+class _SchedulingTab extends StatelessWidget {
+  const _SchedulingTab();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: const Color(0xFFE8F0EC)),
+          ),
+          child: Center(
+            child: Text('Shift scheduling and assigned tasks will be displayed here',
+                style: GoogleFonts.plusJakartaSans(
+                    fontSize: 14, color: AppTheme.textSecondary)),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PerformanceTab extends StatelessWidget {
+  const _PerformanceTab();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: const Color(0xFFE8F0EC)),
+          ),
+          child: Center(
+            child: Text('Worker performance tracking and farm section assignment will be displayed here',
+                style: GoogleFonts.plusJakartaSans(
+                    fontSize: 14, color: AppTheme.textSecondary)),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ReportsTab extends StatelessWidget {
+  const _ReportsTab();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: const Color(0xFFE8F0EC)),
+          ),
+          child: Center(
+            child: Text('Monthly and yearly labor reports with expense integration will be displayed here',
+                style: GoogleFonts.plusJakartaSans(
+                    fontSize: 14, color: AppTheme.textSecondary)),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AnalyticsTab extends StatelessWidget {
+  const _AnalyticsTab();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: const Color(0xFFE8F0EC)),
+          ),
+          child: Center(
+            child: Text('Workforce analytics and notifications will be displayed here',
+                style: GoogleFonts.plusJakartaSans(
+                    fontSize: 14, color: AppTheme.textSecondary)),
+          ),
+        ),
       ],
     );
   }
